@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>binance_practice</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="{{ url_for('static', filename='socket.js') }}"></script>
+  </head>
+  <body>
+    <div>
+      <h1>체결 내역</h1>
+      <table id="tradesTable">
+        <tr>
+          <th>Time</th>
+          <th>Count</th>
+          <th>Price</th>
+          <th>Amount</th>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>
