@@ -1,0 +1,17 @@
+#tradesTable {
+  width: 25%;
+  border-collapse: collapse;
+}
+
+th {
+  text-align: center;
+  background-color: #f2f2f2;
+  padding: 8px;
+  border: 1px solid #ddd;
+}
+
+td {
+  text-align: right;
+  padding: 8px;
+  border: 1px solid #ddd;
+}

@@ -4,7 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>binance_practice</title>
-
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script src="{{ url_for('static', filename='socket.js') }}"></script>
   </head>
@@ -17,6 +21,7 @@
           <th>Count</th>
           <th>Price</th>
           <th>Amount</th>
+          <th>diff</th>
         </tr>
       </table>
     </div>

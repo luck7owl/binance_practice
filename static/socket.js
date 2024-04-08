@@ -6,17 +6,24 @@ socket.on("trades", function (data) {
 
 function updateTrades(data) {
   var table = document.getElementById("tradesTable");
+  var rowCount = table.rows.length;
 
   var time = data["time"];
   var count = data["count"];
   var price = parseFloat(data["price"]);
   var amount = parseFloat(data["amount"]);
+  var diff = parseFloat(data["diff"]);
 
   var row = table.insertRow(1);
   row.insertCell(0).innerHTML = convertToKSTAndFormatTime(time);
   row.insertCell(1).innerHTML = count;
   row.insertCell(2).innerHTML = price.toFixed(1);
   row.insertCell(3).innerHTML = Math.round(amount).toLocaleString("en-US");
+  row.insertCell(4).innerHTML = Math.round(diff).toLocaleString("en-US");
+
+  if (rowCount > 20) {
+    table.deleteRow(-1);
+  }
 }
 
 function convertToKSTAndFormatTime(timeString) {

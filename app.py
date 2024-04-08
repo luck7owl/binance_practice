@@ -22,29 +22,39 @@ async def future_trades_socket():
     bs = ccxtpro.binance({
         'apiKey': API_KEY,
         'secret': SECRET_KEY,
-        'enableRateLimit': True,
         'options': {
             'defaultType': 'future'
         }
     })
 
     while True:
-        trades = await bs.watch_trades(symbol=symbol)
-        time = trades[-1]['datetime']
-        count = len(trades)
-        price = trades[-1]['price']
-        amount = 0
+        try:
+            trades = await bs.watch_trades(symbol=symbol)
+            time = trades[-1]['datetime']
+            count = len(trades)
+            price = trades[-1]['price']
+            amount = 0
+            diff = 0
 
-        for trade in trades:
-            amount += trade['cost']
+            for trade in trades:
+                amount += trade['cost']
+                if trade['side'] == 'buy':
+                    diff += trade['cost']
+                else:
+                    diff -= trade['cost']
 
-        socketio.emit('trades', {
-            'time': time,
-            'count': count,
-            'price': price,
-            'amount': amount,
-        })
-        # await asyncio.sleep(0.1)
+            socketio.emit('trades', {
+                'time': time,
+                'count': count,
+                'price': price,
+                'amount': amount,
+                'diff': diff,
+            })
+            await asyncio.sleep(0.25)
+
+        except Exception as e:
+            print("An error occurred:", e)
+            break
 
 
 @app.route('/')
