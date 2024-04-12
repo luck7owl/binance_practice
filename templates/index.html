@@ -13,15 +13,25 @@
     <script src="{{ url_for('static', filename='socket.js') }}"></script>
   </head>
   <body>
-    <div>
+    <div id="trades">
       <h1>체결 내역</h1>
+      <form id="filterForm">
+        <div>필터 옵션</div>
+        <label for="filterCount">Count</label>
+        <input type="number" id="filterCount" name="count" min="0" />
+        <label for="filterAmount">Amount</label>
+        <input type="number" id="filterAmount" name="amount" min="0" />
+        <button type="button" onclick="updateFilterOptions()">
+          Apply
+        </button>
+      </form>
       <table id="tradesTable">
         <tr>
           <th>Time</th>
           <th>Count</th>
           <th>Price</th>
           <th>Amount</th>
-          <th>diff</th>
+          <th>Net</th>
         </tr>
       </table>
     </div>

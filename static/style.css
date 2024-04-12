@@ -1,5 +1,35 @@
+.positive {
+  color: red;
+}
+
+.negative {
+  color: blue;
+}
+
+.large-amount {
+  background-color: rgba(255, 255, 0, 0.4);
+}
+
+@keyframes blink {
+  0% {
+    background-color: white;
+  }
+  100% {
+    background-color: greenyellow;
+  }
+}
+
+.huge-amount {
+  animation: blink 0.5s infinite;
+}
+
+/* trades */
+#trades {
+  width: 400px;
+}
+
 #tradesTable {
-  width: 25%;
+  width: 100%;
   border-collapse: collapse;
 }
 
@@ -14,4 +44,45 @@ td {
   text-align: right;
   padding: 8px;
   border: 1px solid #ddd;
+}
+
+/* tradesFilterOptions */
+#filterForm {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+#filterForm div {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+}
+
+input[type="number"] {
+  width: calc(100% - 12px);
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #87ceeb;
+  color: #ffffff;
+  font-weight: bold;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #4682b4;
 }

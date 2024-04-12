@@ -34,21 +34,21 @@ async def future_trades_socket():
             count = len(trades)
             price = trades[-1]['price']
             amount = 0
-            diff = 0
+            net = 0
 
             for trade in trades:
                 amount += trade['cost']
                 if trade['side'] == 'buy':
-                    diff += trade['cost']
+                    net += trade['cost']
                 else:
-                    diff -= trade['cost']
+                    net -= trade['cost']
 
             socketio.emit('trades', {
                 'time': time,
                 'count': count,
                 'price': price,
                 'amount': amount,
-                'diff': diff,
+                'net': net,
             })
             await asyncio.sleep(0.25)
 
@@ -66,4 +66,4 @@ if __name__ == '__main__':
     websocket_thread = threading.Thread(
         target=lambda: asyncio.run(future_trades_socket()))
     websocket_thread.start()
-    socketio.run(app)
+    socketio.run(app, debug=True)

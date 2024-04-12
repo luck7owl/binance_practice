@@ -1,5 +1,26 @@
 var socket = io();
 
+var filterOptions = {
+  count: 0,
+  amount: 0,
+};
+
+function validateFilterInput(value) {
+  if (!value || value < 0) {
+    return 0;
+  } else {
+    return value;
+}
+}
+
+function updateFilterOptions() {
+  count = parseInt(document.getElementById("filterCount").value);
+  amount = parseInt(document.getElementById("filterAmount").value);
+
+  filterOptions.count = validateFilterInput(count);
+  filterOptions.amount = validateFilterInput(amount);
+}
+
 socket.on("trades", function (data) {
   updateTrades(data);
 });
@@ -12,18 +33,47 @@ function updateTrades(data) {
   var count = data["count"];
   var price = parseFloat(data["price"]);
   var amount = parseFloat(data["amount"]);
-  var diff = parseFloat(data["diff"]);
+  var net = parseFloat(data["net"]);
 
-  var row = table.insertRow(1);
-  row.insertCell(0).innerHTML = convertToKSTAndFormatTime(time);
-  row.insertCell(1).innerHTML = count;
-  row.insertCell(2).innerHTML = price.toFixed(1);
-  row.insertCell(3).innerHTML = Math.round(amount).toLocaleString("en-US");
-  row.insertCell(4).innerHTML = Math.round(diff).toLocaleString("en-US");
+  if (amount > filterOptions.amount && count > filterOptions.count) {
+    var row = table.insertRow(1);
+    row.insertCell(0).innerHTML = convertToKSTAndFormatTime(time);
+    row.insertCell(1).innerHTML = count;
+    row.insertCell(2).innerHTML = price.toFixed(1);
+    row.insertCell(3).innerHTML = Math.round(amount).toLocaleString("en-US");
+    row.insertCell(4).innerHTML = Math.round(net).toLocaleString("en-US");
 
-  if (rowCount > 20) {
-    table.deleteRow(-1);
+    if (net > 0) {
+      row.classList.add("positive");
+    } else {
+      row.classList.add("negative");
+    }
+
+    if (amount > 100000) {
+      row.classList.add("large-amount");
+      playNotificationSound(net);
+    }
+
+    if (amount > 1000000) {
+      row.classList.add("huge-amount");
+    }
+
+    if (rowCount > 20) {
+      table.deleteRow(-1);
+    }
   }
+}
+
+function playNotificationSound(net) {
+  var soundFile;
+  if (net > 0) {
+    soundFile = "static/sound/sound9.wav";
+  } else {
+    soundFile = "static/sound/sound10.wav";
+  }
+  var audio = new Audio(soundFile);
+  audio.volume = 0.3;
+  audio.play();
 }
 
 function convertToKSTAndFormatTime(timeString) {
