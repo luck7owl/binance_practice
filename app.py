@@ -43,8 +43,7 @@ async def future_trades_socket():
                 else:
                     net -= trade['cost']
 
-            socketio.emit('message', {
-                'type': 'trades',
+            socketio.emit('trades_data', {
                 'payload': {
                     'time': time,
                     'count': count,
@@ -76,8 +75,7 @@ async def future_orderbook_socket():
             bids = orderbook['bids']
             asks_group = group_by(asks, 5, "asks")
             bids_group = group_by(bids, 5, "bids")
-            socketio.emit('message', {
-                "type": "orderbook",
+            socketio.emit('orderbook_data', {
                 "payload": {
                     'asks': asks_group,
                     'bids': bids_group,
