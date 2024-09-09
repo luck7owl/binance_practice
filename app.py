@@ -60,7 +60,7 @@ async def future_trades_socket():
             break
 
 
-async def future_orderbook():
+async def future_orderbook_socket():
     bs = ccxtpro.binance({
         'apiKey': API_KEY,
         'secret': SECRET_KEY,
@@ -116,7 +116,7 @@ def group_by(data, size, type):
 async def sockets():
     await asyncio.gather(
         future_trades_socket(),
-        future_orderbook(),
+        future_orderbook_socket(),
     )
 
 
