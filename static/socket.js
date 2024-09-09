@@ -10,7 +10,7 @@ function validateFilterInput(value) {
     return 0;
   } else {
     return value;
-}
+  }
 }
 
 function updateFilterOptions() {
@@ -21,9 +21,88 @@ function updateFilterOptions() {
   filterOptions.amount = validateFilterInput(amount);
 }
 
-socket.on("trades", function (data) {
-  updateTrades(data);
+socket.on("message", function (data) {
+  if (data.type == "trades") {
+    updateTrades(data.payload);
+  } else if (data.type === "orderbook") {
+    updateOrderbook(data.payload);
+  }
 });
+
+function updateOrderbook(data) {
+  var tbody = document.querySelector("#orderbookTable tbody");
+
+  tbody.innerHTML = "";
+
+  var asks = data["asks"].slice(0, 10).reverse();
+  var bids = data["bids"].slice(0, 10);
+
+  asks.forEach(function (row) {
+    var tr = document.createElement("tr");
+    tr.classList.add("asks");
+
+    tr.appendChild(document.createElement("td"));
+    tr.appendChild(document.createElement("td"));
+    tr.appendChild(document.createElement("td"));
+
+    row.forEach(function (cellData) {
+      var td = document.createElement("td");
+      td.textContent = Math.round(cellData).toLocaleString("en-US");
+      tr.appendChild(td);
+    });
+
+    tr.appendChild(document.createElement("td"));
+    tr.appendChild(document.createElement("td"));
+    tbody.appendChild(tr);
+  });
+
+  bids.forEach(function (row) {
+    var cancelOrder = document.createElement("td");
+    var buyOrder = document.createElement("td");
+    var sellOrder = document.createElement("td");
+
+    // tr
+    var tr = document.createElement("tr");
+    tr.classList.add("bids");
+
+    tr.appendChild(cancelOrder);
+    tr.appendChild(buyOrder);
+
+    row.reverse().forEach(function (cellData) {
+      var td = document.createElement("td");
+      td.textContent = Math.round(cellData).toLocaleString("en-US");
+      tr.appendChild(td);
+    });
+
+    tr.appendChild(document.createElement("td"));
+    tr.appendChild(sellOrder);
+    tr.appendChild(document.createElement("td"));
+
+    tbody.appendChild(tr);
+    cancelOrder.addEventListener("click", handleOrder("cancel"));
+    buyOrder.addEventListener("click", handleOrder("limit", "buy", row[1]));
+    sellOrder.addEventListener("click", handleOrder("limit", "sell", row[1]));
+  });
+}
+
+function handleOrder(type, side, price) {
+  if (type === "cancel") {
+    return function () {
+      console.log(`cancel`);
+    };
+  } else {
+    if (side === "buy") {
+      return function () {
+        console.log(`buy ${price}`);
+      };
+    }
+    if (side === "sell") {
+      return function () {
+        console.log(`sell ${price}`);
+      };
+    }
+  }
+}
 
 function updateTrades(data) {
   var table = document.getElementById("tradesTable");

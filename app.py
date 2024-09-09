@@ -43,18 +43,81 @@ async def future_trades_socket():
                 else:
                     net -= trade['cost']
 
-            socketio.emit('trades', {
-                'time': time,
-                'count': count,
-                'price': price,
-                'amount': amount,
-                'net': net,
+            socketio.emit('message', {
+                'type': 'trades',
+                'payload': {
+                    'time': time,
+                    'count': count,
+                    'price': price,
+                    'amount': amount,
+                    'net': net,
+                }
             })
             await asyncio.sleep(0.25)
 
         except Exception as e:
             print("An error occurred:", e)
             break
+
+
+async def future_orderbook():
+    bs = ccxtpro.binance({
+        'apiKey': API_KEY,
+        'secret': SECRET_KEY,
+        'options': {
+            'defaultType': 'future'
+        }
+    })
+
+    while True:
+        try:
+            orderbook = await bs.watch_order_book(symbol=symbol)
+            asks = orderbook['asks']
+            bids = orderbook['bids']
+            asks_group = group_by(asks, 5, "asks")
+            bids_group = group_by(bids, 5, "bids")
+            socketio.emit('message', {
+                "type": "orderbook",
+                "payload": {
+                    'asks': asks_group,
+                    'bids': bids_group,
+                }
+            })
+            await asyncio.sleep(0.25)
+
+        except Exception as e:
+            print("An error occurred:", e)
+            break
+
+
+def group_by(data, size, type):
+    idx = 0
+    price = 0
+    amount = 0
+    group_by_data = []
+
+    while idx + 1 < len(data):
+        if price == 0:
+            price = data[idx][0] // size
+        if data[idx][0] // size == price:
+            amount += data[idx][0] * data[idx][1]
+            idx += 1
+        else:
+            if type == "asks":
+                group_by_data.append([int((1 + price) * size), amount])
+            if type == "bids":
+                group_by_data.append([int(price * size), amount])
+            price = 0
+            amount = 0
+
+    return group_by_data
+
+
+async def sockets():
+    await asyncio.gather(
+        future_trades_socket(),
+        future_orderbook(),
+    )
 
 
 @app.route('/')
@@ -64,6 +127,6 @@ def index():
 
 if __name__ == '__main__':
     websocket_thread = threading.Thread(
-        target=lambda: asyncio.run(future_trades_socket()))
+        target=lambda: asyncio.run(sockets()))
     websocket_thread.start()
     socketio.run(app, debug=True)

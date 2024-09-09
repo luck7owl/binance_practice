@@ -1,31 +1,12 @@
-.positive {
-  color: red;
-}
-
-.negative {
-  color: blue;
-}
-
-.large-amount {
-  background-color: rgba(255, 255, 0, 0.4);
-}
-
-@keyframes blink {
-  0% {
-    background-color: white;
-  }
-  100% {
-    background-color: greenyellow;
-  }
-}
-
-.huge-amount {
-  animation: blink 0.5s infinite;
+body {
+  display: flex;
 }
 
 /* trades */
 #trades {
+  flex: 1;
   width: 400px;
+  padding: 20px;
 }
 
 #tradesTable {
@@ -60,6 +41,28 @@ td {
   margin-bottom: 10px;
 }
 
+/* orderbook */
+#orderbook {
+  flex: 2;
+}
+
+#orderbookTable {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.asks {
+  color: red;
+}
+
+.bids {
+  color: blue;
+}
+
+#charts {
+  flex: 1;
+}
+
 label {
   font-weight: bold;
   display: block;
@@ -85,4 +88,29 @@ button {
 
 button:hover {
   background-color: #4682b4;
+}
+
+.positive {
+  color: red;
+}
+
+.negative {
+  color: blue;
+}
+
+.large-amount {
+  background-color: rgba(255, 255, 0, 0.4);
+}
+
+@keyframes blink {
+  0% {
+    background-color: white;
+  }
+  100% {
+    background-color: greenyellow;
+  }
+}
+
+.huge-amount {
+  animation: blink 0.5s infinite;
 }
